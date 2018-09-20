@@ -1,6 +1,6 @@
 ﻿namespace TKLOTTERY
 {
-    partial class Form1
+    partial class FrmLogin
     {
         /// <summary>
         /// 設計工具所需的變數。
