@@ -43,7 +43,9 @@ namespace TKLOTTERY
 
         int PEO = 0;
         int CAR = 0;
-        int[] CARnumbers = { 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34 };
+        //int[] CARnumbers = { 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34 };
+
+        int[] CARnumbers = new int[] {  };
         int count = 0;
 
         public FrmCAR()
@@ -78,7 +80,7 @@ namespace TKLOTTERY
             else
             {
                 textBox4.Text = "很抱歉，您未抽中!";
-                textBox5.Text = textBox5.Text + "\n" + count.ToString() + "\n" + textBox4.Text;
+                textBox5.Text = textBox5.Text + Environment.NewLine+ count.ToString() + Environment.NewLine + textBox4.Text;
             }
 
         }
@@ -91,7 +93,7 @@ namespace TKLOTTERY
             CARNO = rnd.Next(1, CAR)-1;
             textBox4.Text = "您抽中了 " + CARnumbers[CARNO].ToString() + " 號車位!";
 
-            textBox5.Text = textBox5.Text + "\n" + count.ToString() + "\n" +textBox4.Text;
+            textBox5.Text = textBox5.Text + Environment.NewLine + count.ToString() + Environment.NewLine + textBox4.Text;
 
             int numToRemove = CARnumbers[CARNO];
             int numIdx = Array.IndexOf(CARnumbers, numToRemove);
@@ -105,7 +107,65 @@ namespace TKLOTTERY
 
         }
 
+        public void INITAILCARNO()
+        {
+            ds.Clear();
 
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+                
+                sbSql.AppendFormat(@" SELECT  [ID]  FROM [TKLOTTERY].[dbo].[CARNO] ");
+                sbSql.AppendFormat(@"  ");
+
+                adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder = new SqlCommandBuilder(adapter);
+                sqlConn.Open();
+                ds.Clear();
+                adapter.Fill(ds, "TEMPds1");
+                sqlConn.Close();
+
+
+                if (ds.Tables["TEMPds1"].Rows.Count == 0)
+                {
+                   
+                }
+                else
+                {
+                    if (ds.Tables["TEMPds1"].Rows.Count >= 1)
+                    {
+                        ADDCARNO();
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+
+        }
+
+        public void ADDCARNO()
+        {
+            CARnumbers = new int[] { };
+
+            foreach (DataRow od in ds.Tables["TEMPds1"].Rows)
+            {
+                CARnumbers=CARnumbers.Concat(new int[] { Convert.ToInt16(od["ID"].ToString()) }).ToArray();
+                //CARnumbers = CARnumbers.Concat(new int[] { 2 }).ToArray();
+            }
+                
+        }
         #endregion
 
         #region BUTTON
@@ -136,7 +196,10 @@ namespace TKLOTTERY
         }
         private void button2_Click(object sender, EventArgs e)
         {
+            INITAILCARNO();
             textBox2.Text = textBox1.Text;
+            textBox3.Text = CARnumbers.Count().ToString();
+
             PEO = Convert.ToInt16(textBox2.Text);
             CAR = Convert.ToInt16(textBox3.Text);
         }

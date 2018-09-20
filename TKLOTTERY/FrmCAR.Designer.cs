@@ -192,7 +192,7 @@
             this.textBox3.ReadOnly = true;
             this.textBox3.Size = new System.Drawing.Size(73, 27);
             this.textBox3.TabIndex = 2;
-            this.textBox3.Text = "22";
+            this.textBox3.Text = "0";
             // 
             // button1
             // 
@@ -281,6 +281,7 @@
             this.textBox5.Name = "textBox5";
             this.textBox5.ReadOnly = true;
             this.tableLayoutPanel2.SetRowSpan(this.textBox5, 4);
+            this.textBox5.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox5.Size = new System.Drawing.Size(354, 461);
             this.textBox5.TabIndex = 9;
             // 
