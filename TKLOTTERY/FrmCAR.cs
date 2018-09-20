@@ -43,6 +43,7 @@ namespace TKLOTTERY
 
         int PEO = 0;
         int CAR = 0;
+        int[] CARnumbers = { 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34 };
 
         public FrmCAR()
         {
@@ -51,8 +52,7 @@ namespace TKLOTTERY
 
         #region FUNCTION
         public void LOTTERY()
-        {
-            
+        {           
            
             if(PEO<= CAR)
             {
@@ -62,9 +62,7 @@ namespace TKLOTTERY
             {
                 STARTLOTTERY();
             }
-
             
-
         }
         public void STARTLOTTERY()
         {
@@ -73,22 +71,26 @@ namespace TKLOTTERY
 
         public void GETCARNO()
         {
-            int[] numbers = { 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34 };
+           
             int CARNO;
             Random rnd = new Random(Guid.NewGuid().GetHashCode());
 
-            CARNO = rnd.Next(1, CAR);
-            textBox4.Text = numbers[CARNO].ToString();
+            CARNO = rnd.Next(1, CAR)-1;
+            textBox4.Text = CARnumbers[CARNO].ToString();
 
-            int numToRemove = numbers[CARNO];
-            numbers = numbers.Where(val => val != numToRemove).ToArray();
+            int numToRemove = CARnumbers[CARNO];
+            int numIdx = Array.IndexOf(CARnumbers, numToRemove);
+            List<int> tmp = new List<int>(CARnumbers);
+            tmp.RemoveAt(numIdx);
+            CARnumbers = tmp.ToArray();
 
 
-            CAR = CAR - 1;
-            
+            CAR = CAR - 1;            
             textBox3.Text = CAR.ToString();
 
         }
+
+        
         #endregion
 
         #region BUTTON
@@ -97,7 +99,7 @@ namespace TKLOTTERY
             PEO = PEO - 1;
             textBox2.Text = PEO.ToString();
 
-            if(PEO>=1)
+            if(PEO>=0 && CAR>=1)
             {
                 LOTTERY();
             }
@@ -113,6 +115,8 @@ namespace TKLOTTERY
             PEO = Convert.ToInt16(textBox2.Text);
             CAR = Convert.ToInt16(textBox3.Text);
         }
+       
+
         #endregion
 
 
