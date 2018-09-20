@@ -34,7 +34,7 @@ namespace TKLOTTERY
         SqlTransaction tran;
         SqlCommand cmd = new SqlCommand();
         DataSet ds = new DataSet();
-        DataSet ds4 = new DataSet();
+        DataSet ds2 = new DataSet();
         DataTable dt = new DataTable();
         string tablename = null;
         string EDITID;
@@ -118,7 +118,7 @@ namespace TKLOTTERY
 
                 sbSql.Clear();
                 
-                sbSql.AppendFormat(@" SELECT  [ID]  FROM [TKLOTTERY].[dbo].[CARNO] ");
+                sbSql.AppendFormat(@" SELECT  [ID]  FROM [TKLOTTERY].[dbo].[CARNO] ORDER BY CONVERT(INT,[ID])");
                 sbSql.AppendFormat(@"  ");
 
                 adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
@@ -166,6 +166,163 @@ namespace TKLOTTERY
             }
                 
         }
+
+        public void SEARCHCARNO()
+        {
+            ds2.Clear();
+
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dberp"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sbSql.Clear();
+
+                sbSql.AppendFormat(@" SELECT  [ID] AS '車位'  FROM [TKLOTTERY].[dbo].[CARNO] ORDER BY CONVERT(INT,[ID])");
+                sbSql.AppendFormat(@"  ");
+
+                adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
+
+                sqlCmdBuilder = new SqlCommandBuilder(adapter);
+                sqlConn.Open();
+                ds2.Clear();
+                adapter.Fill(ds2, "TEMPds2");
+                sqlConn.Close();
+
+
+                if (ds2.Tables["TEMPds2"].Rows.Count == 0)
+                {
+
+                }
+                else
+                {
+                    if (ds2.Tables["TEMPds2"].Rows.Count >= 1)
+                    {
+                        dataGridView1.DataSource = ds2.Tables["TEMPds2"];
+                        dataGridView1.AutoResizeColumns();
+                    }
+
+                }
+
+            }
+            catch
+            {
+
+            }
+            finally
+            {
+
+            }
+        }
+
+        public void ADDCARDNO()
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+
+
+                sbSql.AppendFormat("  INSERT INTO [TKLOTTERY].[dbo].[CARNO]  ([ID]) VALUES ('{0}')",textBox6.Text);
+                sbSql.AppendFormat(" ");
+
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+
+
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+
+        public void DECARNO()
+        {
+            try
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString;
+                sqlConn = new SqlConnection(connectionString);
+
+                sqlConn.Close();
+                sqlConn.Open();
+                tran = sqlConn.BeginTransaction();
+
+                sbSql.Clear();
+                sbSql.AppendFormat("  DELETE [TKLOTTERY].[dbo].[CARNO] WHERE [ID] ='{0}'",textBox7.Text);
+                sbSql.AppendFormat(" ");
+
+                cmd.Connection = sqlConn;
+                cmd.CommandTimeout = 60;
+                cmd.CommandText = sbSql.ToString();
+                cmd.Transaction = tran;
+                result = cmd.ExecuteNonQuery();
+
+                if (result == 0)
+                {
+                    tran.Rollback();    //交易取消
+                }
+                else
+                {
+                    tran.Commit();      //執行交易  
+                }
+
+            }
+            catch
+            {
+
+            }
+
+            finally
+            {
+                sqlConn.Close();
+            }
+        }
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView1.CurrentRow != null)
+            {
+                int rowindex = dataGridView1.CurrentRow.Index;
+                if (rowindex >= 0)
+                {
+                    DataGridViewRow row = dataGridView1.Rows[rowindex];
+                    textBox7.Text = row.Cells["車位"].Value.ToString();
+                    
+                }
+                else
+                {
+                    textBox7.Text = null;
+                    
+                }
+            }
+        }
+
+
         #endregion
 
         #region BUTTON
@@ -190,23 +347,60 @@ namespace TKLOTTERY
             }
             else
             {
-                MessageBox.Show("請按準備");            }
+                MessageBox.Show("請按準備");
+            }
            
             
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            INITAILCARNO();
-            textBox2.Text = textBox1.Text;
-            textBox3.Text = CARnumbers.Count().ToString();
+            if (!string.IsNullOrEmpty(textBox1.Text))
+            {
+                INITAILCARNO();
+                textBox2.Text = textBox1.Text;
+                textBox3.Text = CARnumbers.Count().ToString();
 
-            PEO = Convert.ToInt16(textBox2.Text);
-            CAR = Convert.ToInt16(textBox3.Text);
+                PEO = Convert.ToInt16(textBox2.Text);
+                CAR = Convert.ToInt16(textBox3.Text);
+            }
+            else
+            {
+                MessageBox.Show("請填本次抽車位人數");
+            }
+
+            textBox4.Text = null;
+            textBox5.Text = null;
+
         }
-       
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            SEARCHCARNO();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            ADDCARDNO();
+            SEARCHCARNO();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show("要刪除了?", "要刪除了?", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                DECARNO();
+                SEARCHCARNO();
+            }
+            else if (dialogResult == DialogResult.No)
+            {
+                //do something else
+            }
+        }
+
 
         #endregion
 
-
+       
     }
 }
