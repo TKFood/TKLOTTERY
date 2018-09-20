@@ -354,6 +354,7 @@ namespace TKLOTTERY
         }
         private void button2_Click(object sender, EventArgs e)
         {
+
             if (!string.IsNullOrEmpty(textBox1.Text))
             {
                 INITAILCARNO();
@@ -368,6 +369,7 @@ namespace TKLOTTERY
                 MessageBox.Show("請填本次抽車位人數");
             }
 
+            count = 0;
             textBox4.Text = null;
             textBox5.Text = null;
 
