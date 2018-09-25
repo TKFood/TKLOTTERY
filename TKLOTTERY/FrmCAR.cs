@@ -43,6 +43,7 @@ namespace TKLOTTERY
 
         int PEO = 0;
         int CAR = 0;
+        int PER = 0;
         //int[] CARnumbers = { 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34 };
 
         int[] CARnumbers = new int[] {  };
@@ -71,7 +72,7 @@ namespace TKLOTTERY
         {
             int BINGO;
             Random rnd = new Random(Guid.NewGuid().GetHashCode());
-            BINGO = rnd.Next(1, PEO);
+            BINGO = rnd.Next(1, PER);
 
             if (BINGO <= CAR)
             {
@@ -363,6 +364,7 @@ namespace TKLOTTERY
 
                 PEO = Convert.ToInt16(textBox2.Text);
                 CAR = Convert.ToInt16(textBox3.Text);
+                PER = Convert.ToInt16(textBox2.Text);
             }
             else
             {
