@@ -44,6 +44,7 @@ namespace TKLOTTERY
         int PEO = 0;
         int CAR = 0;
         int PER = 0;
+        int NG = 0;
         //int[] CARnumbers = { 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34 };
 
         int[] CARnumbers = new int[] {  };
@@ -56,17 +57,18 @@ namespace TKLOTTERY
 
         #region FUNCTION
         public void LOTTERY()
-        {           
-           
+        { 
             if(PEO<= CAR)
-            {
+            {              
                 GETCARNO();
             }
-            else if(PEO >CAR)
-            {
+            else if(PEO > CAR)
+            {              
                 STARTLOTTERY();
             }
-            
+
+            PEO = PEO - 1;
+
         }
         public void STARTLOTTERY()
         {
@@ -74,7 +76,8 @@ namespace TKLOTTERY
             Random rnd = new Random(Guid.NewGuid().GetHashCode());
             BINGO = rnd.Next(1, PER);
 
-            if (BINGO <= CAR)
+
+            if ( BINGO <= CAR)
             {
                 GETCARNO();
             }
@@ -335,7 +338,7 @@ namespace TKLOTTERY
             {
                 if (PEO >= 1 && CAR >= 1)
                 {
-                    PEO = PEO - 1;
+                    PER = PEO;
                     LOTTERY();
                 }
                 else
