@@ -77,7 +77,7 @@ namespace TKLOTTERY
             BINGO = rnd.Next(1, PER);
 
 
-            if ( BINGO <= CAR)
+            if (BINGO%5>0)
             {
                 GETCARNO();
             }
