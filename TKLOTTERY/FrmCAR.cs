@@ -17,6 +17,7 @@ using System.Reflection;
 using System.Threading;
 using FastReport;
 using FastReport.Data;
+using System.Collections;
 
 namespace TKLOTTERY
 {
@@ -48,6 +49,7 @@ namespace TKLOTTERY
         //int[] CARnumbers = { 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34 };
 
         int[] CARnumbers = new int[] {  };
+        int[] myArray = new int[] { };
         int count = 0;
 
         public FrmCAR()
@@ -57,35 +59,62 @@ namespace TKLOTTERY
 
         #region FUNCTION
         public void LOTTERY()
-        { 
-            if(PEO<= CAR)
-            {              
-                GETCARNO();
-            }
-            else if(PEO > CAR)
-            {              
-                STARTLOTTERY();
+        {
+
+            int number;
+            string reslut=null;         
+           
+            Random rnd = new Random(Guid.NewGuid().GetHashCode());
+
+            for (int i = 0; i < CAR; i++)
+            {
+                myArray = myArray.Concat(new int[] { rnd.Next(1, PER) }).ToArray();              
+
+                for (int j = 0; j < i; j++)
+                {
+                    while (myArray[j] == myArray[i])    
+                    {
+                        j = 0;  
+                        myArray[i] = rnd.Next(1, PER);   
+                    }
+                }
             }
 
-            PEO = PEO - 1;
+            foreach (object i in myArray)
+            {
+                reslut = reslut + i.ToString() + " ";
+            }
+
+            textBox8.Text = textBox8.Text + reslut.ToString();          
+
+          
 
         }
         public void STARTLOTTERY()
         {
-            int BINGO;
-            Random rnd = new Random(Guid.NewGuid().GetHashCode());
-            BINGO = rnd.Next(1, PER);
+            string check = "N";
 
+            foreach (object i in myArray)
+            {
+                if (count.ToString().Equals(i.ToString()))
+                {
+                    check = "Y";
+                    break;
+                }
+               
+            }
 
-            if (BINGO%5>0)
+            if(check.Equals("Y"))
             {
                 GETCARNO();
             }
             else
             {
                 textBox4.Text = "很抱歉，您未抽中!";
-                textBox5.Text = textBox5.Text + Environment.NewLine+ count.ToString() + Environment.NewLine + textBox4.Text;
+                textBox5.Text = textBox5.Text + Environment.NewLine + count.ToString() + Environment.NewLine + textBox4.Text;
             }
+
+            PEO = PEO - 1;
 
         }
 
@@ -339,7 +368,8 @@ namespace TKLOTTERY
                 if (PEO >= 1 && CAR >= 1)
                 {
                     PER = PEO;
-                    LOTTERY();
+
+                    STARTLOTTERY();
                 }
                 else
                 {
@@ -368,6 +398,11 @@ namespace TKLOTTERY
                 PEO = Convert.ToInt16(textBox2.Text);
                 CAR = Convert.ToInt16(textBox3.Text);
                 PER = Convert.ToInt16(textBox2.Text);
+                
+                textBox8.Text = null;
+                myArray = new int[] { };
+
+                LOTTERY();
             }
             else
             {
