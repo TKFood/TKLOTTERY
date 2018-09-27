@@ -61,21 +61,23 @@ namespace TKLOTTERY
         public void LOTTERY()
         {
 
+
             int number;
             string reslut=null;         
            
-            Random rnd = new Random(Guid.NewGuid().GetHashCode());
+            
 
             for (int i = 0; i < CAR; i++)
             {
-                myArray = myArray.Concat(new int[] { rnd.Next(1, PER) }).ToArray();              
+                Random rnd = new Random(Guid.NewGuid().GetHashCode());
+                myArray = myArray.Concat(new int[] { rnd.Next(1, PER+1) }).ToArray();
 
                 for (int j = 0; j < i; j++)
                 {
-                    while (myArray[j] == myArray[i])    
+                    while (myArray[j] == myArray[i] && i < CAR)
                     {
-                        j = 0;  
-                        myArray[i] = rnd.Next(1, PER);   
+                        j = 0;
+                        myArray[i] = rnd.Next(1, PER);
                     }
                 }
             }
@@ -368,7 +370,6 @@ namespace TKLOTTERY
                 if (PEO >= 1 && CAR >= 1)
                 {
                     PER = PEO;
-
                     STARTLOTTERY();
                 }
                 else
@@ -402,7 +403,15 @@ namespace TKLOTTERY
                 textBox8.Text = null;
                 myArray = new int[] { };
 
-                LOTTERY();
+                if(PEO> CAR)
+                {
+                    LOTTERY();
+                }
+                else
+                {
+                    MessageBox.Show("人數比停車位少，可以直接配停車位!");
+                }                
+               
             }
             else
             {
