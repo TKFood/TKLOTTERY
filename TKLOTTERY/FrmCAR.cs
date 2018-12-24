@@ -63,9 +63,10 @@ namespace TKLOTTERY
 
 
             int number;
-            string reslut=null;         
-           
-            
+            string reslut=null;
+
+            //隨機決定那些抽中的號碼，從1到未抽的人數中任選一號，連續抽跟總車位一樣的次數
+            //每次抽中後，就檢查是否有重覆抽中，有的話就無限再抽，直到不重覆，且總車位一樣多
 
             for (int i = 0; i < CAR; i++)
             {
@@ -389,6 +390,11 @@ namespace TKLOTTERY
         }
         private void button2_Click(object sender, EventArgs e)
         {
+            //先用INITAILCARNO()，初始化可以抽的車位號碼
+            //PEO本次要抽的總人數
+            //CAR可以被抽的總車位數
+            //PER還有多少人未抽
+
 
             if (!string.IsNullOrEmpty(textBox1.Text))
             {
@@ -403,7 +409,11 @@ namespace TKLOTTERY
                 textBox8.Text = null;
                 myArray = new int[] { };
 
-                if(PEO> CAR)
+
+                //如果未抽人數多於總車位數，就要抽 LOTTERY()
+
+
+                if (PEO> CAR)
                 {
                     LOTTERY();
                 }
