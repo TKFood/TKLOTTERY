@@ -164,8 +164,11 @@ namespace TKLOTTERY
 
                 sbSql.Clear();
                 
-                sbSql.AppendFormat(@" SELECT  [ID]  FROM [TKLOTTERY].[dbo].[CARNO] ORDER BY CONVERT(INT,[ID])");
-                sbSql.AppendFormat(@"  ");
+                sbSql.AppendFormat(@" 
+                                    SELECT  [ID]  FROM [TKLOTTERY].[dbo].[CARNO] ORDER BY CONVERT(INT,[ID])
+                                    ");
+
+
 
                 adapter = new SqlDataAdapter(@"" + sbSql, sqlConn);
 
@@ -272,58 +275,64 @@ namespace TKLOTTERY
 
         public void ADDCARDNO()
         {
-            try
+            if(!string.IsNullOrEmpty(textBox6.Text)&& !string.IsNullOrEmpty(textBox7.Text))
             {
-                //20210902密
-                Class1 TKID = new Class1();//用new 建立類別實體
-                SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
-
-                //資料庫使用者密碼解密
-                sqlsb.Password = TKID.Decryption(sqlsb.Password);
-                sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
-
-                String connectionString;
-                sqlConn = new SqlConnection(sqlsb.ConnectionString);
-
-
-                sqlConn.Close();
-                sqlConn.Open();
-                tran = sqlConn.BeginTransaction();
-
-                sbSql.Clear();
-
-
-                sbSql.AppendFormat("  INSERT INTO [TKLOTTERY].[dbo].[CARNO]  ([ID]) VALUES ('{0}')",textBox6.Text);
-                sbSql.AppendFormat(" ");
-
-
-                cmd.Connection = sqlConn;
-                cmd.CommandTimeout = 60;
-                cmd.CommandText = sbSql.ToString();
-                cmd.Transaction = tran;
-                result = cmd.ExecuteNonQuery();
-
-                if (result == 0)
+                try
                 {
-                    tran.Rollback();    //交易取消
+                    //20210902密
+                    Class1 TKID = new Class1();//用new 建立類別實體
+                    SqlConnectionStringBuilder sqlsb = new SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings["dbconn"].ConnectionString);
+
+                    //資料庫使用者密碼解密
+                    sqlsb.Password = TKID.Decryption(sqlsb.Password);
+                    sqlsb.UserID = TKID.Decryption(sqlsb.UserID);
+
+                    String connectionString;
+                    sqlConn = new SqlConnection(sqlsb.ConnectionString);
+
+
+                    sqlConn.Close();
+                    sqlConn.Open();
+                    tran = sqlConn.BeginTransaction();
+
+                    sbSql.Clear();
+
+
+                    sbSql.AppendFormat(@"  
+                                        INSERT INTO [TKLOTTERY].[dbo].[CARNO]  ([ID]) VALUES ('{0}')"
+                                        , textBox6.Text);
+                    sbSql.AppendFormat(" ");
+
+
+                    cmd.Connection = sqlConn;
+                    cmd.CommandTimeout = 60;
+                    cmd.CommandText = sbSql.ToString();
+                    cmd.Transaction = tran;
+                    result = cmd.ExecuteNonQuery();
+
+                    if (result == 0)
+                    {
+                        tran.Rollback();    //交易取消
+                    }
+                    else
+                    {
+                        tran.Commit();      //執行交易  
+
+
+                    }
+
                 }
-                else
+                catch
                 {
-                    tran.Commit();      //執行交易  
-
 
                 }
 
+                finally
+                {
+                    sqlConn.Close();
+                }
             }
-            catch
-            {
-
-            }
-
-            finally
-            {
-                sqlConn.Close();
-            }
+           
         }
 
         public void DECARNO()
