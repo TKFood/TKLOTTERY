@@ -275,7 +275,7 @@ namespace TKLOTTERY
 
         public void ADDCARDNO()
         {
-            if(!string.IsNullOrEmpty(textBox6.Text)&& !string.IsNullOrEmpty(textBox7.Text))
+            if(!string.IsNullOrEmpty(textBox6.Text))
             {
                 try
                 {
@@ -318,7 +318,7 @@ namespace TKLOTTERY
                     {
                         tran.Commit();      //執行交易  
 
-
+                        SET_TEXTBOX_NULL();
                     }
 
                 }
@@ -404,6 +404,10 @@ namespace TKLOTTERY
             }
         }
 
+        public void SET_TEXTBOX_NULL()
+        {
+            textBox6.Text = null;
+        }
 
         #endregion
 
